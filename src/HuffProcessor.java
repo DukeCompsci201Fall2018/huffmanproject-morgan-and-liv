@@ -126,15 +126,13 @@ public class HuffProcessor {
 	
 	private void writeHeader(HuffNode root, BitOutputStream out)
 	{
-		if (root.myValue==0) {
-			out.writeBits(1, 0);
-			writeHeader(root.myLeft, out);
-			writeHeader(root.myRight, out);
-		}
-		else if (root.myValue==1) {
+		if (root.myLeft==null && root.myRight==null) {
 			out.writeBits(1, 1);
 			out.writeBits(9, BITS_PER_WORD+1);
 		}
+		out.writeBits(1, 0);
+		writeHeader(root.myLeft, out);
+		writeHeader(root.myRight, out);
 	}
 	
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out)
