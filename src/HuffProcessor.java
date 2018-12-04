@@ -124,14 +124,26 @@ public class HuffProcessor {
 		
 	}
 	
-	public void writeHeader(HuffNode root, BitInputStream out)
+	public void writeHeader(HuffNode root, BitOutputStream out)
 	{
-		
+		if (root.myValue==0) {
+			out.writeBits(1, 0);
+			writeHeader(root.myLeft, out);
+			writeHeader(root.myRight, out);
+		}
+		else if (root.myValue==1) {
+			out.writeBits(1, BITS_PER_WORD+1);
+		}
 	}
 	
-	public void writeCompressedBits(String[] codings, BitInputStream in, BitInputStream out)
+	public void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out)
 	{
-		
+		for (int i=0; i<codings.length; i++) {
+			String code = codings[i];
+			out.writeBits(code.length(), Integer.parseInt(code, 2));
+		}
+		String code = codings[PSEUDO_EOF];
+		out.writeBits(code.length(), Integer.parseInt(code, 2));
 	}
 	
 	
