@@ -19,8 +19,7 @@ public class HuffProcessor {
 	public static final int PSEUDO_EOF = ALPH_SIZE;
 	public static final int HUFF_NUMBER = 0xface8200;
 	public static final int HUFF_TREE  = HUFF_NUMBER | 1;
-	HuffNode left, right;
-	int value;
+	
 
 	private final int myDebugLevel;
 	
@@ -75,29 +74,35 @@ public class HuffProcessor {
 	
 	public HuffNode readTreeHeader(BitInputStream in)
 	{
+		//System.out.println("FOUND");
 		int bit = in.readBits(1);
+		//System.out.println("HELLO");
+		
 		if(bit==-1)
 			throw new HuffException("bad input");
 		if(bit==0)
 		{
-			left = readTreeHeader(in);
-			right = readTreeHeader(in);
+			HuffNode left = readTreeHeader(in);
+			HuffNode right = readTreeHeader(in);
 			return new HuffNode(0, 0, left, right);
 		}
 		
 		else
 		{
-			value=in.readBits(BITS_PER_WORD +1);
+			int value=in.readBits(BITS_PER_WORD +1);
 			return new HuffNode(value, 0, null, null);
 		}
 	}
 	
 	public void readCompressedBits(HuffNode root, BitInputStream in, BitOutputStream out)
 	{
+		//System.out.println("TEST");
+		
 		HuffNode current = root;
 		while(true)
 		{
 			int bits = in.readBits(1);
+			//System.out.println("here");
 			if(bits==-1)
 				throw new HuffException("bad input, no PSEUDO_EOF");
 			else
@@ -113,7 +118,7 @@ public class HuffProcessor {
 						break;
 					else
 					{
-						out.write(in.readBits(current.myValue));
+						out.writeBits(BITS_PER_WORD, current.myValue);
 						current=root;
 					}
 				}
