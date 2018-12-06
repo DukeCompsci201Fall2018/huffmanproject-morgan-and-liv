@@ -90,7 +90,7 @@ public class HuffProcessor {
 			HuffNode left=pq.remove();
 			HuffNode right=pq.remove();
 			
-			HuffNode t = new HuffNode(left.myWeight+right.myWeight, -1, left, right);
+			HuffNode t = new HuffNode(-1, left.myWeight+right.myWeight, left, right);
 			pq.add(t);
 		}
 		
@@ -144,9 +144,11 @@ public class HuffProcessor {
 		while(val!=-1)
 		{
 			out.writeBits(codings[val].length(), Integer.parseInt(codings[val], 2));
-			out.writeBits(codings[PSEUDO_EOF].length(), Integer.parseInt(codings[PSEUDO_EOF], 2));
 			val=in.readBits(BITS_PER_WORD);
 		}
+		
+		out.writeBits(codings[PSEUDO_EOF].length(), Integer.parseInt(codings[PSEUDO_EOF], 2));
+
 		
 		/*for (int i=0; i<codings.length; i++) {
 			String code = codings[in.readBits(BITS_PER_WORD)];
