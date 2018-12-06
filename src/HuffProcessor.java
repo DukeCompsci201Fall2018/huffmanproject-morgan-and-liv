@@ -128,7 +128,7 @@ public class HuffProcessor {
 	{
 		if (root.myLeft==null && root.myRight==null) {
 			out.writeBits(1, 1);
-			out.writeBits(9, BITS_PER_WORD+1);
+			out.writeBits(BITS_PER_WORD+1, root.myValue);
 		}
 		else {
 			out.writeBits(1, 0);
@@ -148,7 +148,7 @@ public class HuffProcessor {
 		}
 		
 		out.writeBits(codings[PSEUDO_EOF].length(), Integer.parseInt(codings[PSEUDO_EOF], 2));
-
+		//System.out.println("TEST: "+codings[PSEUDO_EOF]);
 		
 		/*for (int i=0; i<codings.length; i++) {
 			String code = codings[in.readBits(BITS_PER_WORD)];
@@ -192,13 +192,13 @@ public class HuffProcessor {
 		{
 			HuffNode left = readTreeHeader(in);
 			HuffNode right = readTreeHeader(in);
-			return new HuffNode(0, 0, left, right);
+			return new HuffNode(0, 1, left, right);
 		}
 		
 		else
 		{
 			int value=in.readBits(BITS_PER_WORD +1);
-			return new HuffNode(value, 0, null, null);
+			return new HuffNode(value, 1, null, null);
 		}
 	}
 	
@@ -223,7 +223,7 @@ public class HuffProcessor {
 				if(current.myRight==null && current.myLeft==null)
 				{
 					if(current.myValue==PSEUDO_EOF)
-						break;
+						return;
 					else
 					{
 						out.writeBits(BITS_PER_WORD, current.myValue);
